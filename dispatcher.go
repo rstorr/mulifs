@@ -95,13 +95,17 @@ func cleanLists() {
  *  This is the main loop of the dispatcher.
  */
 func processMsgs() {
+	timerDuration := time.Second * 3
+	timer := time.NewTimer(timerDuration)
 	for {
 		select {
 		case res := <-fChannel:
+			timer.Stop()
 			addFile(res)
-		case <-time.After(time.Second * 3):
+		case <-timer.C:
 			cleanLists()
 		}
+		timer.Reset(timerDuration)
 	}
 }
 
